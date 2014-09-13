@@ -41,8 +41,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
-public class Calculator extends JFrame
-{
+public class Calculator extends JFrame {
   private static final double VERSION = 2.0;
   
   private static final int WIDTH = 900;
@@ -88,8 +87,7 @@ public class Calculator extends JFrame
   private Point2D.Double zoom = new Point2D.Double(15, 15);
   private Point lastClick = new Point(-100, -100);
   
-  public Calculator()
-  {
+  public Calculator() {
     super("JCalculator " + VERSION);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -108,19 +106,15 @@ public class Calculator extends JFrame
     
     final JTextField inputTextField = new JTextField(70);
     inputTextField.setFont(new Font("Monospaced", Font.PLAIN, 14));
-    ActionListener enterActionListener = new ActionListener() 
-    {
-      public void actionPerformed(ActionEvent event)
-      {
-        if (tabPane.getSelectedIndex() == 0)
+    ActionListener enterActionListener = new ActionListener() {
+      public void actionPerformed(ActionEvent event) {
+        if (tabPane.getSelectedIndex() == 0) {
           calculate(inputTextField.getText());
-        else
-        {
+        } else {
           String eqn = inputTextField.getText();
           functions.add(eqn);
           eqnComboBox.addItem(eqn);
-          if (!graph(eqn, colours[(functions.size()-1)%colours.length]))
-          {
+          if (!graph(eqn, colours[(functions.size()-1) % colours.length])) {
             functions.remove(eqn);
             eqnComboBox.removeItem(eqn);
           }
@@ -130,19 +124,18 @@ public class Calculator extends JFrame
       }
     };
     inputTextField.addActionListener(enterActionListener);
-    inputTextField.addKeyListener(new KeyAdapter()
-    {
-      public void keyPressed(KeyEvent event)
-      {
-        switch (event.getKeyCode())
-        {
+    inputTextField.addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent event) {
+        switch (event.getKeyCode()) {
           case KeyEvent.VK_UP:
-            if (historyIndex > 0)
+            if (historyIndex > 0) {
               historyIndex--;
+            }
             break;
           case KeyEvent.VK_DOWN:
-            if (historyIndex < history.size() - 1)
+            if (historyIndex < history.size() - 1) {
               historyIndex++;
+            }
             break;
           default:
             return;
@@ -154,10 +147,8 @@ public class Calculator extends JFrame
     equalButton.addActionListener(enterActionListener);
     
     final JComboBox angleModeCombo = new JComboBox(new String[] {"Radians", "Degrees"});
-    angleModeCombo.addItemListener(new ItemListener()
-    {
-      public void itemStateChanged(ItemEvent event) 
-      {
+    angleModeCombo.addItemListener(new ItemListener() {
+      public void itemStateChanged(ItemEvent event) {
         radianMode = angleModeCombo.getSelectedIndex() == 0;
       }
     });
@@ -190,10 +181,8 @@ public class Calculator extends JFrame
     xZoomSlider.setPaintTicks(true);
     xZoomSlider.setPaintLabels(true);
     xZoomSlider.setFont(font);
-    xZoomSlider.addMouseListener(new MouseAdapter()
-    {
-      public void mouseReleased(MouseEvent e)
-      {
+    xZoomSlider.addMouseListener(new MouseAdapter() {
+      public void mouseReleased(MouseEvent e) {
         zoom.x = xZoomSlider.getValue() + 5;
         initGraph();
       }
@@ -211,10 +200,8 @@ public class Calculator extends JFrame
     yZoomSlider.setPaintTicks(true);
     yZoomSlider.setPaintLabels(true);
     yZoomSlider.setFont(font);
-    yZoomSlider.addMouseListener(new MouseAdapter()
-    {
-      public void mouseReleased(MouseEvent e)
-      {
+    yZoomSlider.addMouseListener(new MouseAdapter() {
+      public void mouseReleased(MouseEvent e) {
         zoom.y = yZoomSlider.getValue() + 5;
         initGraph();
       }
@@ -230,29 +217,24 @@ public class Calculator extends JFrame
     eqnComboBox.setPreferredSize(new Dimension(100, 25));
     graphOpPnl1.add(eqnComboBox);
     JButton editEqnBtn = new JButton("Edit");
-    editEqnBtn.addActionListener(new ActionListener()
-    {
-      public void actionPerformed(ActionEvent e)
-      {
+    editEqnBtn.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
         int index = eqnComboBox.getSelectedIndex();
         String newEqn = JOptionPane.showInputDialog("Edit the equation:", functions.get(index));
-        if (newEqn != null)
-        {
+        if (newEqn != null) {
           functions.set(index, newEqn);
           eqnComboBox.setSelectedItem(newEqn);
           initGraph();
-        }
-        else
+        } else {
           render();
+        }
         graphPanel.requestFocus();
       }
     });
     editEqnBtn.setFont(font);
     JButton deleteEqnBtn = new JButton("Delete");
-    deleteEqnBtn.addActionListener(new ActionListener()
-    {
-      public void actionPerformed(ActionEvent e)
-      {
+    deleteEqnBtn.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
         int index = eqnComboBox.getSelectedIndex();
         functions.remove(index);
         eqnComboBox.removeItemAt(index);
@@ -262,10 +244,8 @@ public class Calculator extends JFrame
     deleteEqnBtn.setFont(font);
     JButton clearBtn = new JButton("Clear");
     clearBtn.setFont(font);
-    clearBtn.addActionListener(new ActionListener()
-    {
-      public void actionPerformed(ActionEvent e)
-      {
+    clearBtn.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
         functions.removeAll(functions);
         eqnComboBox.removeAllItems();
         initGraph();
@@ -273,10 +253,8 @@ public class Calculator extends JFrame
     });
     JButton resetBtn = new JButton("Reset");
     resetBtn.setFont(font);
-    resetBtn.addActionListener(new ActionListener()
-    {
-      public void actionPerformed(ActionEvent e)
-      {
+    resetBtn.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
         coord.x = 0;
         coord.y = 0;
         initGraph();
@@ -298,24 +276,18 @@ public class Calculator extends JFrame
     graphOptionPnl.add(graphOpPnl);
     
     graphPanel.setPreferredSize(new Dimension(GRAPH_WIDTH, GRAPH_HEIGHT));
-    graphPanel.addFocusListener(new FocusListener()
-    {
-      public void focusGained(FocusEvent e)
-      {
+    graphPanel.addFocusListener(new FocusListener() {
+      public void focusGained(FocusEvent e) {
         render();
       }
       
-      public void focusLost(FocusEvent e)
-      {
+      public void focusLost(FocusEvent e) {
         render();
       }
     });
-    graphPanel.addMouseMotionListener(new MouseMotionAdapter()
-    {
-      public void mouseDragged(MouseEvent event) 
-      {
-        if (lastClick.x > 0 && lastClick.y > 0)
-        {
+    graphPanel.addMouseMotionListener(new MouseMotionAdapter() {
+      public void mouseDragged(MouseEvent event) {
+        if (lastClick.x > 0 && lastClick.y > 0) {
           int oldXOffset = offset.x;
           int oldYOffset = offset.y;
           offset.x += event.getX() - lastClick.x;
@@ -323,22 +295,20 @@ public class Calculator extends JFrame
           render();
           offset.x = oldXOffset;
           offset.y = oldYOffset;
-        }
-        else
+        } else {
           lastClick = new Point(event.getX(), event.getY());
+        }
       }
       
-      public void mouseMoved(MouseEvent e)
-      {
-        xyCoordLbl.setText(numberFormat.format((e.getX()-GRAPH_WIDTH/2)/zoom.x-coord.x/zoom.x) + ", " + numberFormat.format(-((e.getY()-GRAPH_HEIGHT/2)/zoom.y-coord.y/zoom.y)));
+      public void mouseMoved(MouseEvent e) {
+        xyCoordLbl.setText(
+            numberFormat.format((e.getX()-GRAPH_WIDTH/2)/zoom.x-coord.x/zoom.x) + ", "
+            + numberFormat.format(-((e.getY()-GRAPH_HEIGHT/2)/zoom.y-coord.y/zoom.y)));
       }
     });
-    graphPanel.addMouseListener(new MouseAdapter()
-    {
-      public void mouseReleased(MouseEvent e)
-      {
-        if (lastClick.x >= 0 && lastClick.y >= 0)
-        {
+    graphPanel.addMouseListener(new MouseAdapter() {
+      public void mouseReleased(MouseEvent e) {
+        if (lastClick.x >= 0 && lastClick.y >= 0) {
           offset.x = (int)((-(GRAPH_FULL_WIDTH - GRAPH_WIDTH) / 2) - 5);
           offset.y = (int)((-(GRAPH_FULL_HEIGHT - GRAPH_HEIGHT) / 2));
           coord.x += e.getX() - lastClick.x;
@@ -352,12 +322,9 @@ public class Calculator extends JFrame
     graphingPnl.add(graphPanel, BorderLayout.CENTER);
     graphingPnl.add(graphOptionPnl, BorderLayout.PAGE_END);
     tabPane.addTab("Graphing", graphingPnl);
-    tabPane.addChangeListener(new ChangeListener()
-    {
-      public void stateChanged(ChangeEvent event) 
-      {
-        if (tabPane.getSelectedIndex() == 1)
-        {
+    tabPane.addChangeListener(new ChangeListener() {
+      public void stateChanged(ChangeEvent event) {
+        if (tabPane.getSelectedIndex() == 1) {
           render();
           initGraph();
           graphPanel.requestFocus();
@@ -373,8 +340,7 @@ public class Calculator extends JFrame
     offset.y = -250;
   }
   
-  private void calculate(String eqn)
-  {
+  private void calculate(String eqn) {
     println(eqn);
     String answerTxt = "";
     if (eqn.toLowerCase().equals("horse"))
@@ -397,15 +363,14 @@ public class Calculator extends JFrame
     {
       history.add(eqn);
       eqn = prepareEquation(eqn);
-      try
-      {
+      try {
         double answer = simplify(eqn);
-        if (answer % (Math.PI/1000) < 0.1)
-        {
-          if (answer >= Math.PI)
+        if (answer % (Math.PI/1000) < 0.1) {
+          if (answer >= Math.PI) {
             answerTxt = numberFormat.format(answer / Math.PI) + "*pi";
-          else if ((int)(Math.PI/answer)==Math.ceil(Math.PI/answer))
+          } else if ((int)(Math.PI/answer)==Math.ceil(Math.PI/answer)) {
             answerTxt = "pi/" + numberFormat.format(Math.PI / answer);
+          }
         }
         history.add("" + answer);
         lastAnswer = answer;
@@ -413,111 +378,79 @@ public class Calculator extends JFrame
         if (answerTxt != "")
           println("= " + answerTxt);
         println("");
-      }
-      catch (Exception exception)
-      {
+      } catch (Exception exception) {
         println("An error occurred.\n");
-      }
-      finally
-      {
+      } finally {
         historyIndex = history.size();
       }
     }
   }
   
-  private double simplify(String eqn)
-  {
+  private double simplify(String eqn) {
     String[] terms = null;
     double[] values;
     double answer = 0;
     eqn = eqn.replaceAll("\\)\\(", "\\)*\\(");
     int n = 0;
-    while (n != -1)
-    {
+    while (n != -1) {
       n = eqn.lastIndexOf("(");
-      if (n != -1)
-      {
+      if (n != -1) {
         String s = eqn.substring(n+1, eqn.indexOf(")", n));
         String end = eqn.substring(eqn.indexOf(")", n)+1);
         double ans;
-        if (eqn.indexOf("sqrt") != -1 && eqn.lastIndexOf("sqrt") + 4 == n)
-        {
+        if (eqn.indexOf("sqrt") != -1 && eqn.lastIndexOf("sqrt") + 4 == n) {
           ans = Math.sqrt(simplify(s));
           eqn = eqn.substring(0, eqn.lastIndexOf("sqrt")) + ans + end;
-        }
-        else if (eqn.indexOf("cbrt") != -1 && eqn.lastIndexOf("cbrt") + 4 == n)
-        {
+        } else if (eqn.indexOf("cbrt") != -1 && eqn.lastIndexOf("cbrt") + 4 == n) {
           ans = Math.cbrt(simplify(s));
           eqn = eqn.substring(0, eqn.lastIndexOf("cbrt")) + ans + end;
-        }
-        else if (eqn.indexOf("root") != -1 && eqn.lastIndexOf("root") + 4 == n)
-        {
+        } else if (eqn.indexOf("root") != -1 && eqn.lastIndexOf("root") + 4 == n) {
           String[] s2 = s.split(",");
           ans = Math.pow(simplify(s2[0]), 1/simplify(s2[1]));
           eqn = eqn.substring(0, eqn.lastIndexOf("root")) + ans + end;
-        }
-        else if (eqn.indexOf("abs") != -1 && eqn.lastIndexOf("abs") + 3 == n)
-        {
+        } else if (eqn.indexOf("abs") != -1 && eqn.lastIndexOf("abs") + 3 == n) {
           ans = Math.abs(simplify(s));
           eqn = eqn.substring(0, eqn.lastIndexOf("abs")) + ans + end;
-        }
-        else if (eqn.indexOf("asin") != -1 && eqn.lastIndexOf("asin") + 4 == n)
-        {
+        } else if (eqn.indexOf("asin") != -1 && eqn.lastIndexOf("asin") + 4 == n) {
           ans = (radianMode) ? Math.asin(simplify(s)) : Math.asin(simplify(s))*180/Math.PI;
           eqn = eqn.substring(0, eqn.lastIndexOf("asin")) + ans + end;
-        }
-        else if (eqn.indexOf("acos") != -1 && eqn.lastIndexOf("acos") + 4 == n)
-        {
+        } else if (eqn.indexOf("acos") != -1 && eqn.lastIndexOf("acos") + 4 == n) {
           ans = (radianMode) ? Math.acos(simplify(s)) : Math.acos(simplify(s))*180/Math.PI;
           eqn = eqn.substring(0, eqn.lastIndexOf("acos")) + ans + end;
-        }
-        else if (eqn.indexOf("atan") != -1 && eqn.lastIndexOf("atan") + 4 == n)
-        {
+        } else if (eqn.indexOf("atan") != -1 && eqn.lastIndexOf("atan") + 4 == n) {
           ans = (radianMode) ? Math.atan(simplify(s)) : Math.atan(simplify(s))*180/Math.PI;
           eqn = eqn.substring(0, eqn.lastIndexOf("atan")) + ans + end;
-        }
-        else if (eqn.indexOf("sin") != -1 && eqn.lastIndexOf("sin") + 3 == n)
-        {
+        } else if (eqn.indexOf("sin") != -1 && eqn.lastIndexOf("sin") + 3 == n) {
           ans = (radianMode) ? Math.sin(simplify(s)) : Math.sin(simplify(s)*Math.PI/180);
           eqn = eqn.substring(0, eqn.lastIndexOf("sin")) + ans + end;
-        }
-        else if (eqn.indexOf("cos") != -1 && eqn.lastIndexOf("cos") + 3 == n)
-        {
+        } else if (eqn.indexOf("cos") != -1 && eqn.lastIndexOf("cos") + 3 == n) {
           ans = (radianMode) ? Math.cos(simplify(s)) : Math.cos(simplify(s)*Math.PI/180);
           eqn = eqn.substring(0, eqn.lastIndexOf("cos")) + ("" + ans) + end;
-        }
-        else if (eqn.indexOf("tan") != -1 && eqn.lastIndexOf("tan") + 3 == n)
-        {
+        } else if (eqn.indexOf("tan") != -1 && eqn.lastIndexOf("tan") + 3 == n) {
           ans = (radianMode) ? Math.tan(simplify(s)) : Math.tan(simplify(s)*Math.PI/180);
           eqn = eqn.substring(0, eqn.lastIndexOf("tan")) + ans + end;
-        }
-        else if (eqn.indexOf("log") != -1 && eqn.lastIndexOf("log") + 3 == n)
-        {
+        } else if (eqn.indexOf("log") != -1 && eqn.lastIndexOf("log") + 3 == n) {
           ans = Math.log10(simplify(s));
           eqn = eqn.substring(0, eqn.lastIndexOf("log")) + ans + end;
-        }
-        else if (eqn.indexOf("ln") != -1 && eqn.lastIndexOf("ln") + 2 == n)
-        {
+        } else if (eqn.indexOf("ln") != -1 && eqn.lastIndexOf("ln") + 2 == n) {
           ans = Math.log(simplify(s));
           eqn = eqn.substring(0, eqn.lastIndexOf("ln")) + ans + end;
-        }
-        else if (eqn.indexOf("avg") != -1 && eqn.lastIndexOf("avg") + 3 == n)
-        {
+        } else if (eqn.indexOf("avg") != -1 && eqn.lastIndexOf("avg") + 3 == n) {
           String[] nums = s.split(",");
           double total = 0;
-          for (int i = 0; i < nums.length; i++)
+          for (int i = 0; i < nums.length; i++) {
             total += simplify(nums[i]);
+          }
           ans = total / nums.length;
           eqn = eqn.substring(0, eqn.lastIndexOf("avg")) + ans + end;
-        }
-        else
-        {
+        } else {
           ans = simplify(s);
           String st = eqn.substring(0, n);
-          if (st.length() > 0 && !isOperator(st.charAt(st.length()-1)))
+          if (st.length() > 0 && !isOperator(st.charAt(st.length()-1))) {
             eqn = st + "*" + ans + end;
-          else
+          } else {
             eqn = st + ans + end;
+          }
         }
       }
     }
